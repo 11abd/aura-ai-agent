@@ -1,0 +1,29 @@
+Job Title: Machine Learning Engineer
+Location: Chennai
+Skills: Python, TensorFlow, SQL, AWS
+Description:
+We are looking for a Machine Learning Engineer with experience in deploying ML models...
+
+---
+
+Job Title: Data Scientist
+Location: Bangalore
+Skills: Python, Pandas, Scikit-learn, NLP
+Description:
+The candidate should have strong statistical knowledge and experience in NLP...
+
+---
+
+Job Title: Machine Learning Engineer
+Location: Pune
+Skills: Python, TensorFlow, AWS, fastapi
+Description:
+We are looking for a api developer...
+
+---
+
+Job Title: LLM Engineer
+Location: Bangalore
+Skills: Python, langgraph, agentic ai
+Description:
+The candidate should have strong statistical knowledge and experience in LLM, agentic ai...
