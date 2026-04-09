@@ -1,4 +1,4 @@
-from app.rag.pipeline import build_vector_db
+from app.rag.pipeline import build_or_load_vector_db
 from app.rag.retriever import get_retriever
 from app.utils.logger import setup_logger, get_logger
 
@@ -9,7 +9,7 @@ logger = get_logger(__name__)
 def test_rag():
     logger.info("Building vector DB...")
 
-    vector_store = build_vector_db()
+    vector_store = build_or_load_vector_db()
 
     retriever = get_retriever(vector_store)
 
