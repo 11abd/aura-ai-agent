@@ -21,7 +21,7 @@ class RAGService:
         Retrieve relevant documents using semantic search
         """
 
-        docs = self.retriever.invoke(query)  # ✅ correct method
+        docs = self.retriever.invoke(query)  
 
         context = "\n\n".join([doc.page_content for doc in docs])
 
