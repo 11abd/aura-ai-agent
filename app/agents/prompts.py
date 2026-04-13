@@ -30,3 +30,66 @@ Output format:
         input_variables=["goal"],
         template=template
     )
+
+def get_generator_prompt():
+    """
+    Prompt for resume tailoring
+    """
+
+    template = """
+You are an expert resume optimizer.
+
+Given:
+1. Candidate Resume
+2. Job Descriptions
+
+Your task:
+- Tailor the resume to match the job requirements
+- Highlight relevant skills
+- Improve keywords for ATS systems
+- Keep it professional and concise
+
+Candidate Resume:
+{resume}
+
+Job Context:
+{context}
+
+Output:
+- Updated resume content
+"""
+
+    return PromptTemplate(
+        input_variables=["resume", "context"],
+        template=template
+    )
+
+def get_critic_prompt():
+    """
+    Prompt for evaluating generated resume
+    """
+
+    template = """
+You are an expert resume reviewer.
+
+Evaluate the resume based on:
+- Relevance to job description
+- Keyword optimization
+- Clarity and structure
+- Technical alignment
+
+Job Context:
+{context}
+
+Generated Resume:
+{resume}
+
+Return:
+- Score (0 to 10)
+- Feedback with improvements
+"""
+
+    return PromptTemplate(
+        input_variables=["context", "resume"],
+        template=template
+    )
