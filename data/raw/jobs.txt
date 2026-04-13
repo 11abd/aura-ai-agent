@@ -3,6 +3,7 @@ Location: Chennai
 Skills: Python, TensorFlow, SQL, AWS
 Description:
 We are looking for a Machine Learning Engineer with experience in deploying ML models...
+The ideal candidate should also have strong problem-solving skills and experience with scalable systems.
 
 ---
 
@@ -11,19 +12,124 @@ Location: Bangalore
 Skills: Python, Pandas, Scikit-learn, NLP
 Description:
 The candidate should have strong statistical knowledge and experience in NLP...
+Experience in handling large datasets and building predictive models is a plus.
 
 ---
 
-Job Title: Machine Learning Engineer
+Job Title: AI Engineer
+Location: Hyderabad
+Skills: Python, PyTorch, Deep Learning, Computer Vision
+Description:
+We are seeking an AI Engineer skilled in deep learning and computer vision techniques...
+The role involves building and optimizing AI models for real-world applications.
+
+---
+
+Job Title: MLOps Engineer
 Location: Pune
-Skills: Python, TensorFlow, AWS, fastapi
+Skills: Docker, Kubernetes, MLflow, CI/CD
 Description:
-We are looking for a api developer...
+Looking for an MLOps Engineer to streamline ML lifecycle and deployment pipelines...
+Experience with cloud platforms and automation tools is highly preferred.
 
 ---
 
-Job Title: LLM Engineer
-Location: Bangalore
-Skills: Python, langgraph, agentic ai
+Job Title: Data Analyst
+Location: Mumbai
+Skills: SQL, Excel, Power BI, Python
 Description:
-The candidate should have strong statistical knowledge and experience in LLM, agentic ai...
+The Data Analyst will be responsible for extracting insights from structured data...
+Strong visualization skills and business understanding are essential.
+
+---
+
+
+Job Title: NLP Engineer
+Location: Chennai
+Skills: Python, Transformers, Hugging Face, NLP
+Description:
+We are hiring an NLP Engineer to work on text processing and language models...
+Experience with LLMs and fine-tuning techniques will be an added advantage.
+
+---
+
+Job Title: Backend Developer (AI Systems)
+Location: Bangalore
+Skills: Python, FastAPI, REST APIs, PostgreSQL
+Description:
+Looking for a backend developer to support AI-driven applications...
+The candidate should be comfortable building scalable APIs and integrating ML models.
+
+---
+
+Job Title: Data Engineer
+Location: Hyderabad
+Skills: Python, Spark, Hadoop, SQL
+Description:
+The Data Engineer will design and maintain data pipelines and ETL processes...
+Experience with big data tools and distributed systems is required.
+
+---
+
+Job Title: Computer Vision Engineer
+Location: Pune
+Skills: OpenCV, Python, Deep Learning, CNN
+Description:
+We are seeking a Computer Vision Engineer to build image and video processing solutions...
+Hands-on experience with real-time vision systems is highly desirable.
+
+---
+
+Job Title: AI Research Engineer
+Location: Bangalore
+Skills: Python, Research, Deep Learning, Mathematics
+Description:
+The role involves researching and implementing advanced AI algorithms...
+Candidates should be comfortable reading research papers and prototyping solutions.
+
+---
+
+Job Title: Cloud ML Engineer
+Location: Chennai
+Skills: AWS, SageMaker, Python, ML Deployment
+Description:
+We are looking for a Cloud ML Engineer to deploy and manage ML models on cloud platforms...
+Experience in cost optimization and monitoring is a key requirement.
+
+---
+
+Job Title: Full Stack AI Developer
+Location: Mumbai
+Skills: React, Node.js, Python, AI Integration
+Description:
+The candidate will develop end-to-end AI-powered applications...
+Strong understanding of frontend and backend integration is necessary.
+
+---
+
+Job Title: Business Intelligence Analyst
+Location: Hyderabad
+Skills: SQL, Tableau, Power BI, Data Modeling
+Description:
+Responsible for building dashboards and generating business insights...
+Ability to communicate findings effectively to stakeholders is important.
+
+---
+
+Job Title: Deep Learning Engineer
+Location: Pune
+Skills: PyTorch, TensorFlow, Neural Networks, GPU Computing
+Description:
+We are hiring a Deep Learning Engineer to design and train neural networks...
+Experience with model optimization and performance tuning is expected.
+
+---
+
+Job Title: AI Product Engineer
+Location: Bangalore
+Skills: Python, APIs, Machine Learning, Product Development
+Description:
+Looking for an AI Product Engineer to bridge the gap between ML and product development...
+The candidate should understand user requirements and translate them into AI solutions.
+
+---
