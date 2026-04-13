@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.config.settings import settings
 from app.utils.logger import setup_logger, get_logger
+from app.api.routes import router
 
 # Setup logging
 setup_logger()
@@ -19,8 +20,4 @@ def startup_event():
 def health_check():
     return {"status": f"{settings.APP_NAME} is running 🚀"}
 
-
-@app.post("/run-agent")
-def run_agent():
-    logger.info("Run agent endpoint called")
-    return {"message": "Agent execution coming soon"}
+app.include_router(router)
