@@ -1,5 +1,7 @@
 from app.rag.rag_service import RAGService
 from app.tools.web_search import WebSearchTool
+from app.tools.tool_registry import ToolRegistry
+from app.agents.tool_selector import ToolSelectorAgent
 
 
 
@@ -7,8 +9,9 @@ from app.tools.web_search import WebSearchTool
 class ResearchAgent:
 
     def __init__(self):
-        self.rag_service = RAGService()
-        self.web_search = WebSearchTool()
+
+        self.tool_registry = ToolRegistry()
+        self.tool_selector = ToolSelectorAgent()
 
     def is_retrieval_good(self, docs, query: str) -> bool:
         """
@@ -30,19 +33,17 @@ class ResearchAgent:
 
     def research(self, query: str) -> dict:
 
-        docs, answer = self.rag_service.run(query)
+        # 🔥 Step 1: Choose tool
+        selection = self.tool_selector.select_tool(query)
 
-        context = "\n\n".join([doc.page_content for doc in docs])
+        tool = self.tool_registry.get_tool(selection.tool_name)
 
-        #Smart condition
-        if not self.is_retrieval_good(docs, query):
-            web_result = self.web_search.search(query)
-
-            context += "\n\n[WEB SEARCH RESULTS]\n" + web_result
+        # 🔥 Step 2: Execute tool
+        context = tool.run(query)
 
         return {
             "query": query,
-            "num_results": len(docs),
-            "context": context,
-            "summary": answer
+            "tool_used": selection.tool_name,
+            "reason": selection.reason,
+            "context": context
         }

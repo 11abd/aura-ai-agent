@@ -93,3 +93,31 @@ Return:
         input_variables=["context", "resume"],
         template=template
     )
+
+
+def get_tool_selection_prompt():
+    """
+    Prompt to decide which tool to use
+    """
+
+    template = """
+You are an intelligent agent.
+
+Available tools:
+1. rag → for internal knowledge (resume + stored jobs)
+2. web_search → for real-time or missing information
+
+Decide which tool is best for the query.
+
+Rules:
+- Use rag if query matches stored job data
+- Use web_search if query needs fresh or unknown info
+
+Query:
+{query}
+"""
+
+    return PromptTemplate(
+        input_variables=["query"],
+        template=template
+    )
