@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  aura-app:
+    build: .
+    container_name: aura-ai-agent
+    ports:
+      - "8000:8000"
+
+    env_file:
+      - .env
+
+    restart: always
