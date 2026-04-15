@@ -1,4 +1,5 @@
 from typing import TypedDict, List, Optional
+from typing import Any
 
 
 class AgentState(TypedDict):
@@ -16,3 +17,4 @@ class AgentState(TypedDict):
     feedback: Optional[str]
 
     retries: int
+    logger: Any

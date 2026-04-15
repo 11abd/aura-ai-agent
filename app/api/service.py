@@ -1,5 +1,5 @@
 from app.graph.builder import build_graph
-
+from app.utils.run_logger import RunLogger
 
 class AgentService:
     """
@@ -13,6 +13,7 @@ class AgentService:
         """
         Execute agent system
         """
+        logger = RunLogger()
 
         input_state = {
             "query": query,
@@ -21,10 +22,13 @@ class AgentService:
             "generated_resume": None,
             "score": None,
             "feedback": None,
-            "retries": 0
+            "retries": 0,
+            "logger" :logger
         }
 
         result = self.graph.invoke(input_state)
+
+        logger.save()
 
         return {
             "query": query,

@@ -7,7 +7,7 @@ def get_planner_prompt():
     """
 
     template = """
-You are an AI planning agent.
+You are an AI planning agent for resume creation
 
 Break the user's goal into clear, step-by-step actions.
 
