@@ -1,1 +1,241 @@
-**Abdul Rahaman S**  \nMachine Learning Engineer | Data Scientist  \nabdulabd1132000@gmail.com | 8939030306  \n[linkedin.com/in/abdul-rahaman-s11](https://linkedin.com/in/abdul-rahaman-s11)  \nChennai  \n[https://github.com/11abd](https://github.com/11abd)  \n\n---\n\n**PROFILE**  \nResults-driven Machine Learning Engineer and Data Scientist with a robust background in developing and deploying AI systems. Proficient in machine learning, deep learning, and natural language processing (NLP), with hands-on experience in building production-ready ML solutions. Demonstrated ability to design and implement end-to-end machine learning pipelines, ensuring model explainability and performance optimization. Actively pursuing opportunities to leverage AI engineering skills in real-world applications, focusing on creating systems that thrive in production environments.\n\n---\n\n**SKILLS**  \n**Languages:** Python, SQL  \n**Deep Learning & NLP:** TensorFlow, Keras, Transformers, LLM, RAG  \n**MLOps & Deployment:** MLflow, DVC, Docker, GitHub Actions, FastAPI, CI/CD  \n**Cloud & Systems:** AWS (S3, EC2, SageMaker), Azure (AZ-900, AZ-104), Git, PostgreSQL  \n**Machine Learning & Data Science:** Scikit-learn, XGBoost, Pandas, NumPy, Model Evaluation, Feature Engineering  \n\n---\n\n**PROJECTS**  \n\n**Fraud Detection System – End-to-End MLOps Project**  \n*Technologies: Python, XGBoost, Scikit-learn, FastAPI, MLflow, Docker, GitHub Actions, SHAP*  \n- Developed an XGBoost-based fraud classifier on highly imbalanced transaction data (~0.17% fraud rate), significantly enhancing fraud recall compared to baseline models.  \n- Executed business-driven threshold tuning, achieving an optimal recall-precision balance.  \n- Attained high ROC-AUC scores (above 0.9) while prioritizing recall for effective fraud detection.  \n- Integrated SHAP for model explainability, providing insights into feature importance for both global trends and individual predictions.  \n- Deployed a FastAPI inference service, utilizing Docker for containerization, with automated CI checks and experiment tracking via MLflow.  \n\n**RAG Chatbot (NLP / LLM Project)**  \n*Technologies: Python, FastAPI, Ollama, Sentence-transformers, ChromaDB*  \n- Engineered a fully offline RAG system capable of answering queries based on PDFs and lecture videos.  \n- Implemented a hybrid retrieval mechanism combining vector similarity (ChromaDB) and keyword-based scoring for improved answer accuracy.  \n- Developed an idempotent ingestion pipeline featuring PDF parsing, Whisper-based transcription, chunking, and embeddings.  \n- Integrated local LLM inference (Ollama) with strict context enforcement to minimize hallucinations and enhance answer relevance.  \n\n---\n\n**PROFESSIONAL EXPERIENCE**  \n\n**Ciklum (Pixellot AI Sports Production)**  \n*Mar 2024 – Present | Chennai*  \n**Support Engineer**  \n- Supported a large-scale sports production platform utilized by global B2B clients, ensuring system reliability and performance.  \n- Monitored system and stream health through Grafana dashboards, proactively identifying anomalies to avert downstream failures.  \n- Diagnosed pipeline failures, data inconsistencies, and configuration issues by analyzing application and system logs.  \n- Conducted acceptance testing for new installations, ensuring system stability prior to client handover.  \n- Escalated critical issues to R&D teams with detailed reproduction steps and logs, contributing to long-term system reliability.  \n- Gained exposure to production systems and algorithm behavior, driving a deeper focus on machine learning and applied AI development.  \n\n**Infosys**  \n*Oct 2020 – Mar 2024 | Chennai*  \n**System Engineer**  \n- Resolved Windows OS and enterprise application incidents within SLA using ServiceNow, enhancing operational efficiency.  \n- Executed patching, vulnerability remediation, and system administration across servers and workstations.  \n- Provided support for Office 365 services including Outlook, Teams, OneDrive, and SharePoint, improving user experience.  \n- Contributed to operational improvements through proactive monitoring and issue prevention strategies.  \n\n---\n\n**CERTIFICATES**  \n- AWS Certified Machine Learning Engineer – Associate (MLA-C01)  \n- ITIL V4 Foundation – Service Management Best Practices  \n- Microsoft Certified: Azure Administrator Associate (AZ-104)  \n- Business Communication Excellence – Level 5  \n- Microsoft Certified: Azure Fundamentals (AZ-900)  \n\n---\n\n**EDUCATION**  \n**University of Madras**  \nBachelor of Computer Applications  \n*2017 – 2020 | Chennai, India*  \n\n**Dhanalakshmi School**  \nHigher Secondary  \n*2017 | Chennai* 
+# AURA AI Agent
+
+AURA AI Agent is a multi-agent resume tailoring system built for job-targeted resume generation.
+
+It combines:
+- `Planner Agent` to understand the user goal
+- `Research Agent` to gather internal or external job context
+- `Generator Agent` to produce a tailored resume in Markdown
+- `Critic Agent` to evaluate the result using an LLM-as-judge scoring rubric
+- `RAG Pipeline` to index local job data and the candidate resume
+- `Run Logging` to save every run inside the `logs/` folder
+
+## Features
+
+- Tailors a resume to a specific job query or role target
+- Uses local retrieval over stored jobs and the saved resume
+- Falls back to web search when local retrieval is weak or outdated
+- Produces Markdown resume output
+- Scores the generated resume with a structured judge rubric
+- Retries generation when the score is too low
+- Saves run logs and text artifacts for research, resume drafts, and critic output
+- Includes both a `FastAPI` backend and a `Streamlit` UI
+- Lets you upload a new resume from the UI and rebuild the vector index at runtime
+
+## Project Structure
+
+```text
+aura-ai-agent/
+├── app/
+│   ├── agents/        # Planner, research, generator, critic, prompts, schemas
+│   ├── api/           # FastAPI routes and service layer
+│   ├── config/        # Settings and LLM configuration
+│   ├── graph/         # LangGraph workflow
+│   ├── rag/           # Loading, chunking, embedding, vector store, runtime refresh
+│   ├── tools/         # RAG and web-search tool wrappers
+│   └── utils/         # Logging helpers
+├── data/
+│   └── raw/
+│       ├── jobs.txt
+│       └── resume.txt
+├── faiss_index/       # Local vector index
+├── logs/              # Per-run logs and artifacts
+├── main.py            # FastAPI entrypoint
+└── streamlit_app.py   # Streamlit UI
+```
+
+## How It Works
+
+1. A user enters a job target or request.
+2. The planner creates a short execution plan.
+3. The research agent selects `rag` or `web_search`.
+4. The generator creates a Markdown resume tailored to the retrieved context.
+5. The critic evaluates the result with rubric scores and an overall score.
+6. If the score is low, the system retries generation using critic feedback.
+7. The system writes structured logs and artifacts into `logs/run_<timestamp>/`.
+
+## Requirements
+
+- Python 3.10+
+- OpenAI API key
+- Tavily API key for live web search
+
+## Environment Variables
+
+Create a `.env` file in the project root:
+
+```env
+OPENAI_API_KEY=your_openai_key
+OPENAI_MODEL=gpt-4o-mini
+TAVILY_API_KEY=your_tavily_key
+DATABASE_URL=postgresql://postgres:password@localhost:5432/aura_db
+```
+
+## Installation
+
+```bash
+python -m venv venv
+```
+
+Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+macOS/Linux:
+
+```bash
+source venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Run With FastAPI
+
+Start the API server:
+
+```bash
+uvicorn main:app --reload
+```
+
+Open:
+
+- API root: `http://127.0.0.1:8000/`
+- Swagger docs: `http://127.0.0.1:8000/docs`
+
+### FastAPI Demo: Run The Agent
+
+`POST /run-agent`
+
+Example request:
+
+```json
+{
+  "query": "Find machine learning roles in Chennai and tailor my resume for Python, AWS, and MLOps."
+}
+```
+
+Example `curl`:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/run-agent" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"query\":\"Find machine learning roles in Chennai and tailor my resume for Python, AWS, and MLOps.\"}"
+```
+
+Example response:
+
+```json
+{
+  "query": "Find machine learning roles in Chennai and tailor my resume for Python, AWS, and MLOps.",
+  "final_resume": "# Abdul Rahaman S\n...",
+  "score": 8,
+  "feedback": "Strong role fit with a few opportunities to sharpen keyword alignment.",
+  "retries": 1,
+  "run_dir": "logs/run_20260416_020459"
+}
+```
+
+### FastAPI Demo: Upload Resume And Refresh Index
+
+`POST /upload-resume`
+
+Example request:
+
+```json
+{
+  "resume_text": "Your latest resume text here"
+}
+```
+
+Example `curl`:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/upload-resume" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"resume_text\":\"Your latest resume text here\"}"
+```
+
+This endpoint:
+- saves the resume to `data/raw/resume.txt`
+- rebuilds the FAISS index immediately
+- logs the upload and refresh action inside `logs/`
+
+## Run With Streamlit
+
+Start the UI:
+
+```bash
+streamlit run streamlit_app.py
+```
+
+Open:
+
+- Streamlit UI: `http://localhost:8501`
+
+### Streamlit Demo Flow
+
+1. Open the `Knowledge Base` tab.
+2. Upload a `.txt` or `.md` resume file, or paste resume text.
+3. Click `Save Resume And Refresh Index`.
+4. AURA saves the resume to `data/raw/resume.txt` and rebuilds the vector index during runtime.
+5. Switch to the `Run Agent` tab.
+6. Enter a target job request.
+7. Click `Run AURA`.
+8. View the generated Markdown resume, judge feedback, score, retries, and log folder path.
+
+## Runtime Index Refresh
+
+AURA automatically checks whether the vector index is stale based on the modification time of:
+
+- `data/raw/jobs.txt`
+- `data/raw/resume.txt`
+
+If either file changes, the index is rebuilt at runtime when needed.
+
+Manual refresh also happens when:
+
+- a new resume is uploaded through Streamlit
+- a new resume is uploaded through the FastAPI upload endpoint
+
+## Logs
+
+Every run is logged under `logs/`.
+
+Agent runs now create a folder like:
+
+```text
+logs/run_20260416_020459/
+├── run.json
+├── research_context.md
+├── generated_resume_attempt_1.md
+├── critic_evaluation_attempt_1.md
+├── final_resume.md
+└── final_feedback.md
+```
+
+Resume upload and index refresh actions also create their own log folders.
+
+## Notes
+
+- The FAISS index is stored locally under `faiss_index/jobs_v2/`.
+- The retrieval pipeline indexes both local job data and the saved resume.
+- The generator always reads the latest saved `data/raw/resume.txt` at runtime.
+- If the embedding model is not already cached locally, the first build may require internet access depending on your environment.
+
+## Future Improvements
+
+- PDF and DOCX resume ingestion
+- Job upload UI alongside resume upload
+- Better ranking and metadata filtering
+- Persistent memory/database-backed run history
+- Export final resume as PDF
+
+## License
+
+This project is currently for personal and portfolio use unless you add your own license.
