@@ -9,4 +9,5 @@ class AgentResponse(BaseModel):
     query: str
     final_resume: str
     score: int
+    feedback: str
     retries: int

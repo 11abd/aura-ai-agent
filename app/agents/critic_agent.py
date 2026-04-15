@@ -5,7 +5,7 @@ from app.agents.schemas import CriticOutput
 
 class CriticAgent:
     """
-    Agent responsible for evaluating generated output
+    Agent responsible for LLM-as-judge evaluation of generated resumes.
     """
 
     def __init__(self):
@@ -14,7 +14,7 @@ class CriticAgent:
 
     def evaluate(self, context: str, resume: str) -> CriticOutput:
         """
-        Evaluate resume and return structured output
+        Evaluate resume and return structured LLM-as-judge output.
         """
 
         formatted_prompt = self.prompt.format(
@@ -22,9 +22,7 @@ class CriticAgent:
             resume=resume
         )
 
-        # Structured output 🔥
         structured_llm = self.llm.with_structured_output(CriticOutput)
-
         response = structured_llm.invoke(formatted_prompt)
 
         return response

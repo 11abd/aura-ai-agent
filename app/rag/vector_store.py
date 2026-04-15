@@ -4,7 +4,7 @@ def create_vector_store(documents, embedding_model):
     """
     Create FAISS vector store from documents
     """
-    return FAISS.from_texts(documents, embedding_model)
+    return FAISS.from_documents(documents, embedding_model)
 
 
 def save_vector_store(vector_store, path="faiss_index"):

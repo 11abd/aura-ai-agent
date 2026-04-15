@@ -15,14 +15,22 @@ class GeneratorAgent:
         # Load resume once (efficient)
         self.resume = load_resume("data/raw/resume.txt")
 
-    def generate_resume(self, job_context: str) -> str:
+    def generate_resume(
+        self,
+        job_context: str,
+        critic_feedback: str = "",
+        retry_count: int = 0
+    ) -> str:
         """
-        Generate tailored resume using job context
+        Generate tailored resume using job context and prior judge feedback.
         """
 
+        feedback = critic_feedback.strip() if critic_feedback else "No previous judge feedback."
         formatted_prompt = self.prompt.format(
             resume=self.resume,
-            context=job_context
+            context=job_context,
+            feedback=feedback,
+            attempt=retry_count + 1
         )
 
         response = self.llm.invoke(formatted_prompt)
