@@ -31,3 +31,17 @@ class ToolSelection(BaseModel):
     reason: str = Field(
         description="Why this tool was chosen"
     )
+
+
+class WorkflowRoute(BaseModel):
+    """
+    Structured output for deciding whether to run the resume workflow.
+    """
+
+    use_resume_workflow: bool = Field(
+        description="True when the query should go through the resume/job pipeline"
+    )
+
+    direct_response: str = Field(
+        description="Natural user-facing answer to return when the resume workflow should not run"
+    )

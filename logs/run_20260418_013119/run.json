@@ -1,0 +1,19 @@
+{
+    "timestamp": "20260418_013119",
+    "run_dir": "logs\\run_20260418_013119",
+    "steps": [
+        {
+            "step": "workflow_router",
+            "data": {
+                "query": "How are you?",
+                "use_resume_workflow": false
+            }
+        },
+        {
+            "step": "direct_response",
+            "data": {
+                "response_preview": "I'm doing well, thank you! How can I assist you today?"
+            }
+        }
+    ]
+}

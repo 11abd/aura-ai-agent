@@ -7,7 +7,7 @@ def should_retry(state):
     retries = state.get("retries", 0)
 
     # Retry if score low and retries < limit
-    if score < 7 and retries < 2:
+    if score < 7 and retries < 5:
         return "retry"
 
     return "end"

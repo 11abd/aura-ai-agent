@@ -1,15 +1,57 @@
 import os
-from typing import Dict, List
+from pathlib import Path
+from typing import Dict, List, Optional
 
-def load_text_file(file_path: str) -> str:
+from langchain_community.document_loaders import PyPDFLoader, TextLoader
+
+RAW_DATA_DIR = Path("data") / "raw"
+JOB_FILE_PATH = RAW_DATA_DIR / "jobs.txt"
+RESUME_TEXT_PATH = RAW_DATA_DIR / "resume.txt"
+RESUME_PDF_PATH = RAW_DATA_DIR / "resume.pdf"
+SUPPORTED_RESUME_EXTENSIONS = {".txt", ".md", ".pdf"}
+
+
+def _load_documents(file_path: str):
     """
-    Load a text file and return content as string
+    Load documents using a LangChain loader based on file type.
+    """
+    suffix = Path(file_path).suffix.lower()
+
+    if suffix == ".pdf":
+        loader = PyPDFLoader(file_path)
+    elif suffix in {".txt", ".md"}:
+        loader = TextLoader(file_path, encoding="utf-8")
+    else:
+        raise ValueError(f"Unsupported file type: {suffix}")
+
+    return loader.load()
+
+
+def load_document_text(file_path: str) -> str:
+    """
+    Load a supported file and return a single normalized text string.
     """
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"{file_path} not found")
 
-    with open(file_path, "r", encoding="utf-8") as file:
-        return file.read()
+    documents = _load_documents(file_path)
+    return "\n\n".join(doc.page_content.strip() for doc in documents if doc.page_content.strip())
+
+
+def resolve_resume_path(preferred_path: Optional[str] = None) -> str:
+    """
+    Resolve the current resume source file.
+    """
+    if preferred_path:
+        candidate = Path(preferred_path)
+        if candidate.exists():
+            return str(candidate)
+
+    for candidate in (RESUME_PDF_PATH, RESUME_TEXT_PATH):
+        if candidate.exists():
+            return str(candidate)
+
+    raise FileNotFoundError("No resume source found in data/raw. Expected resume.txt or resume.pdf")
 
 
 def split_jobs(raw_text: str) -> List[str]:
@@ -73,14 +115,14 @@ def parse_job(job_text: str) -> Dict[str, object]:
 
 def load_jobs(file_path: str) -> List[str]:
     """
-    Load and split job descriptions
+    Load and split job descriptions.
     """
-    raw_text = load_text_file(file_path)
+    raw_text = load_document_text(file_path)
     return split_jobs(raw_text)
 
 
-def load_resume(file_path: str) -> str:
+def load_resume(file_path: Optional[str] = None) -> str:
     """
-    Load resume text
+    Load resume text from txt, md, or pdf source.
     """
-    return load_text_file(file_path)
+    return load_document_text(resolve_resume_path(file_path))

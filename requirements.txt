@@ -12,3 +12,6 @@ pydantic
 sqlalchemy
 psycopg2-binary
 tavily-python
+streamlit
+pypdf
+python-multipart

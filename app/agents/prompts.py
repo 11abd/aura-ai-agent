@@ -35,6 +35,47 @@ Example format:
     return PromptTemplate(input_variables=["goal"], template=template)
 
 
+def get_workflow_router_prompt():
+    """
+    Prompt for deciding whether the full resume workflow should run.
+    """
+    template = """
+You are an internal routing component inside AURA AI Agent.
+
+Your job is to decide whether a user query should:
+1. enter the full resume and job-targeting workflow, or
+2. receive a normal direct answer without running the resume pipeline.
+
+Use the resume workflow when the query is about:
+- tailoring or improving a resume or CV
+- matching the candidate to jobs or roles
+- optimizing for ATS, applications, interviews, or hiring
+- job search requests that should lead to resume generation or evaluation
+
+Do not use the resume workflow when the query is:
+- casual conversation
+- general Q&A unrelated to jobs or resume work
+- greetings, small talk, or chit-chat
+- unrelated technical questions that do not ask for resume/job-targeting help
+
+Rules:
+- If `use_resume_workflow` is true, leave `direct_response` empty.
+- If `use_resume_workflow` is false, answer the user naturally in `direct_response`.
+- Do not mention routing, classification, hidden workflow decisions, or internal systems.
+- Keep non-workflow responses concise and helpful.
+
+Query:
+{query}
+
+Return your answer in the structured schema only.
+"""
+
+    return PromptTemplate(
+        input_variables=["query"],
+        template=template
+    )
+
+
 def get_generator_prompt():
     """
     Prompt for tailored resume generation.
@@ -181,6 +222,8 @@ Decision policy:
 - Use web_search when the query depends on up-to-date market information, live openings, company-specific recent details, salaries, deadlines, or anything not likely stored locally.
 - If the user asks for "latest", "today", "recent", or real-time information, choose web_search.
 - If the request is mainly about identifying the best fit from known internal job context, choose rag.
+- If the query mentions a role, language, framework, or specialization that is not clearly represented in the local job dataset, choose web_search.
+- If local retrieval is likely to return only loosely related roles, prefer web_search over rag.
 
 Reasoning rules:
 - Pick exactly one tool.

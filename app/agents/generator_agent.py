@@ -12,9 +12,6 @@ class GeneratorAgent:
         self.llm = get_llm()
         self.prompt = get_generator_prompt()
 
-        # Load resume once (efficient)
-        self.resume = load_resume("data/raw/resume.txt")
-
     def generate_resume(
         self,
         job_context: str,
@@ -26,8 +23,9 @@ class GeneratorAgent:
         """
 
         feedback = critic_feedback.strip() if critic_feedback else "No previous judge feedback."
+        resume = load_resume()
         formatted_prompt = self.prompt.format(
-            resume=self.resume,
+            resume=resume,
             context=job_context,
             feedback=feedback,
             attempt=retry_count + 1

@@ -1,64 +1,80 @@
 # AURA AI Agent
 
-AURA AI Agent is a multi-agent resume tailoring system built for job-targeted resume generation.
+AURA AI Agent is a multi-agent resume tailoring system that helps a candidate:
 
-It combines:
-- `Planner Agent` to understand the user goal
-- `Research Agent` to gather internal or external job context
-- `Generator Agent` to produce a tailored resume in Markdown
-- `Critic Agent` to evaluate the result using an LLM-as-judge scoring rubric
-- `RAG Pipeline` to index local job data and the candidate resume
-- `Run Logging` to save every run inside the `logs/` folder
+- understand a target job query
+- gather relevant internal or external job context
+- generate a tailored resume in Markdown
+- evaluate the output with an LLM-as-judge critic
+- retry weak generations using structured feedback
 
-## Features
+The project combines `FastAPI`, `Streamlit`, `LangGraph`, `LangChain`, local `FAISS` retrieval, and structured run logging.
 
-- Tailors a resume to a specific job query or role target
-- Uses local retrieval over stored jobs and the saved resume
-- Falls back to web search when local retrieval is weak or outdated
-- Produces Markdown resume output
-- Scores the generated resume with a structured judge rubric
-- Retries generation when the score is too low
-- Saves run logs and text artifacts for research, resume drafts, and critic output
-- Includes both a `FastAPI` backend and a `Streamlit` UI
-- Lets you upload a new resume from the UI and rebuild the vector index at runtime
+## Highlights
 
-## Project Structure
+- Multi-agent workflow built with LangGraph
+- Resume generation in Markdown
+- LLM-as-judge evaluation with rubric-based scoring
+- Retrieval over local job data plus the saved resume
+- Web-search fallback when local retrieval is weak
+- Runtime resume upload and vector index refresh
+- Streamlit frontend and FastAPI backend
+- Per-run logging in the `logs/` folder
+
+## Project Flow
+
+1. The user submits a job goal or targeting query.
+2. The `Planner Agent` turns the request into a short execution plan.
+3. The `Research Agent` chooses either:
+   - local `RAG`
+   - external `web_search`
+4. The `Generator Agent` creates a tailored resume in Markdown.
+5. The `Critic Agent` scores the output as an LLM judge.
+6. If the score is below the retry threshold, the generator runs again with critic feedback.
+7. Final artifacts and structured logs are saved under `logs/run_<timestamp>/`.
+
+For a visual architecture graph, see [ARCHITECTURE.md](./ARCHITECTURE.md).
+
+## Tech Stack
+
+- `FastAPI` for backend APIs
+- `Streamlit` for the frontend UI
+- `LangGraph` for orchestration
+- `LangChain` for prompts, loaders, and retrieval utilities
+- `FAISS` for local vector search
+- `OpenAI` for generation and judging
+- `Tavily` for live web search fallback
+
+## Repository Structure
 
 ```text
 aura-ai-agent/
-├── app/
-│   ├── agents/        # Planner, research, generator, critic, prompts, schemas
-│   ├── api/           # FastAPI routes and service layer
-│   ├── config/        # Settings and LLM configuration
-│   ├── graph/         # LangGraph workflow
-│   ├── rag/           # Loading, chunking, embedding, vector store, runtime refresh
-│   ├── tools/         # RAG and web-search tool wrappers
-│   └── utils/         # Logging helpers
-├── data/
-│   └── raw/
-│       ├── jobs.txt
-│       └── resume.txt
-├── faiss_index/       # Local vector index
-├── logs/              # Per-run logs and artifacts
-├── main.py            # FastAPI entrypoint
-└── streamlit_app.py   # Streamlit UI
+|-- app/
+|   |-- agents/        # Planner, research, generator, critic, prompts, schemas
+|   |-- api/           # FastAPI routes, schemas, and service layer
+|   |-- config/        # Settings and LLM configuration
+|   |-- graph/         # LangGraph builder, nodes, edges, state
+|   |-- memory/        # Simple memory storage
+|   |-- rag/           # Loaders, chunking, embedding, vector store, refresh logic
+|   |-- tools/         # RAG and web-search tools
+|   `-- utils/         # Logging and local test helpers
+|-- data/
+|   `-- raw/
+|       |-- jobs.txt
+|       |-- resume.txt
+|       `-- resume.pdf
+|-- faiss_index/       # Local FAISS index
+|-- logs/              # Run logs and generated artifacts
+|-- main.py            # FastAPI entrypoint
+|-- streamlit_app.py   # Streamlit frontend
+`-- README.md
 ```
-
-## How It Works
-
-1. A user enters a job target or request.
-2. The planner creates a short execution plan.
-3. The research agent selects `rag` or `web_search`.
-4. The generator creates a Markdown resume tailored to the retrieved context.
-5. The critic evaluates the result with rubric scores and an overall score.
-6. If the score is low, the system retries generation using critic feedback.
-7. The system writes structured logs and artifacts into `logs/run_<timestamp>/`.
 
 ## Requirements
 
 - Python 3.10+
 - OpenAI API key
-- Tavily API key for live web search
+- Tavily API key for live search
 
 ## Environment Variables
 
@@ -72,6 +88,8 @@ DATABASE_URL=postgresql://postgres:password@localhost:5432/aura_db
 ```
 
 ## Installation
+
+Create and activate a virtual environment:
 
 ```bash
 python -m venv venv
@@ -95,20 +113,20 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-## Run With FastAPI
+## Run the FastAPI Backend
 
-Start the API server:
+Start the backend:
 
 ```bash
 uvicorn main:app --reload
 ```
 
-Open:
+Available endpoints:
 
-- API root: `http://127.0.0.1:8000/`
+- Root: `http://127.0.0.1:8000/`
 - Swagger docs: `http://127.0.0.1:8000/docs`
 
-### FastAPI Demo: Run The Agent
+### Run the Agent
 
 `POST /run-agent`
 
@@ -120,14 +138,6 @@ Example request:
 }
 ```
 
-Example `curl`:
-
-```bash
-curl -X POST "http://127.0.0.1:8000/run-agent" ^
-  -H "Content-Type: application/json" ^
-  -d "{\"query\":\"Find machine learning roles in Chennai and tailor my resume for Python, AWS, and MLOps.\"}"
-```
-
 Example response:
 
 ```json
@@ -135,38 +145,25 @@ Example response:
   "query": "Find machine learning roles in Chennai and tailor my resume for Python, AWS, and MLOps.",
   "final_resume": "# Abdul Rahaman S\n...",
   "score": 8,
-  "feedback": "Strong role fit with a few opportunities to sharpen keyword alignment.",
+  "feedback": "Strong role fit with a few improvements still needed.",
   "retries": 1,
-  "run_dir": "logs/run_20260416_020459"
+  "run_dir": "logs/run_20260418_123456"
 }
 ```
 
-### FastAPI Demo: Upload Resume And Refresh Index
+### Upload a Resume Source
 
 `POST /upload-resume`
 
-Example request:
+Supported formats:
 
-```json
-{
-  "resume_text": "Your latest resume text here"
-}
-```
+- `.txt`
+- `.md`
+- `.pdf`
 
-Example `curl`:
+The backend parses the uploaded resume, saves it into `data/raw/`, rebuilds the vector index, and logs the refresh action.
 
-```bash
-curl -X POST "http://127.0.0.1:8000/upload-resume" ^
-  -H "Content-Type: application/json" ^
-  -d "{\"resume_text\":\"Your latest resume text here\"}"
-```
-
-This endpoint:
-- saves the resume to `data/raw/resume.txt`
-- rebuilds the FAISS index immediately
-- logs the upload and refresh action inside `logs/`
-
-## Run With Streamlit
+## Run the Streamlit Frontend
 
 Start the UI:
 
@@ -176,66 +173,77 @@ streamlit run streamlit_app.py
 
 Open:
 
-- Streamlit UI: `http://localhost:8501`
+- `http://localhost:8501`
 
-### Streamlit Demo Flow
+### Streamlit UI Flow
 
-1. Open the `Knowledge Base` tab.
-2. Upload a `.txt` or `.md` resume file, or paste resume text.
-3. Click `Save Resume And Refresh Index`.
-4. AURA saves the resume to `data/raw/resume.txt` and rebuilds the vector index during runtime.
-5. Switch to the `Run Agent` tab.
-6. Enter a target job request.
-7. Click `Run AURA`.
-8. View the generated Markdown resume, judge feedback, score, retries, and log folder path.
+`Run Agent` tab:
 
-## Runtime Index Refresh
+- enter a target role or job query
+- run the planner, research, generator, and critic flow
+- inspect the final Markdown resume and judge feedback
 
-AURA automatically checks whether the vector index is stale based on the modification time of:
+`Manage Resume` tab:
 
-- `data/raw/jobs.txt`
-- `data/raw/resume.txt`
+- upload a `.txt`, `.md`, or `.pdf` resume
+- parse the file using LangChain loaders
+- rebuild the vector index immediately
+- preview the parsed resume content
 
-If either file changes, the index is rebuilt at runtime when needed.
+## Retrieval and Resume Ingestion
 
-Manual refresh also happens when:
+The RAG pipeline indexes:
 
-- a new resume is uploaded through Streamlit
-- a new resume is uploaded through the FastAPI upload endpoint
+- local job descriptions from `data/raw/jobs.txt`
+- the active resume source from `data/raw/resume.txt` or `data/raw/resume.pdf`
 
-## Logs
+Resume ingestion uses LangChain loaders:
 
-Every run is logged under `logs/`.
+- `TextLoader` for `.txt` and `.md`
+- `PyPDFLoader` for `.pdf`
 
-Agent runs now create a folder like:
+The vector index is rebuilt when:
+
+- no index exists yet
+- the source files change
+- a new resume is uploaded from Streamlit or FastAPI
+
+## Logging
+
+Every agent run writes to a dedicated folder:
 
 ```text
-logs/run_20260416_020459/
-├── run.json
-├── research_context.md
-├── generated_resume_attempt_1.md
-├── critic_evaluation_attempt_1.md
-├── final_resume.md
-└── final_feedback.md
+logs/run_20260418_123456/
+|-- run.json
+|-- research_context.md
+|-- generated_resume_attempt_1.md
+|-- critic_evaluation_attempt_1.md
+|-- final_resume.md
+`-- final_feedback.md
 ```
 
-Resume upload and index refresh actions also create their own log folders.
+Resume uploads and index refresh operations also create log folders with parsed resume artifacts.
+
+## Current Retry Logic
+
+The graph retries generation when:
+
+- `score < 7`
+- `retries < 5`
+
+This means the `Critic Agent` can send the flow back to the `Generator Agent` multiple times before the graph ends.
 
 ## Notes
 
-- The FAISS index is stored locally under `faiss_index/jobs_v2/`.
-- The retrieval pipeline indexes both local job data and the saved resume.
-- The generator always reads the latest saved `data/raw/resume.txt` at runtime.
-- If the embedding model is not already cached locally, the first build may require internet access depending on your environment.
+- The local FAISS index is stored under `faiss_index/jobs_v2/`.
+- The generator uses the latest saved resume source at runtime.
+- The retrieval pipeline blends vector similarity with lightweight lexical and metadata reranking.
+- The first embedding build may require model download access if the embedding model is not already cached locally.
 
-## Future Improvements
+## Next Improvements
 
-- PDF and DOCX resume ingestion
-- Job upload UI alongside resume upload
-- Better ranking and metadata filtering
-- Persistent memory/database-backed run history
-- Export final resume as PDF
-
-## License
-
-This project is currently for personal and portfolio use unless you add your own license.
+- DOCX resume parsing
+- Job upload UI
+- Better source attribution in research output
+- Export resume to PDF
+- Persistent database-backed run history

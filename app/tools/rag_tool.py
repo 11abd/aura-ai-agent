@@ -7,13 +7,19 @@ class RAGTool:
     """
 
     def __init__(self):
-        self.rag = RAGService()
+        self.rag = None
+
+    def _get_rag_service(self):
+        """
+        Build a fresh service so runtime resume uploads are reflected immediately.
+        """
+        return RAGService()
 
     def retrieve(self, query: str):
         """
         Retrieve documents without generating an answer.
         """
-        return self.rag.retrieve_documents(query)
+        return self._get_rag_service().retrieve_documents(query)
 
     def format_documents(self, docs) -> str:
         """

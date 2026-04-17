@@ -1,0 +1,13 @@
+{
+    "sources": {
+        "job_file": {
+            "path": "data\\raw\\jobs.txt",
+            "mtime": 1776283370.2556055
+        },
+        "resume_file": {
+            "path": "data\\raw\\resume.pdf",
+            "mtime": 1776452818.0909998
+        }
+    },
+    "chunk_count": 26
+}
